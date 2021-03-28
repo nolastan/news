@@ -19,7 +19,10 @@ exports.handler = async event => {
 
     // Get Image
     const imageEl = bodyEl.querySelector('.govd_template_image');
-    imageUrl = imageEl.getAttribute('src');
+    var imageUrl;
+    if(imageEl) {
+      imageUrl = imageEl.getAttribute('src');
+    }
 
     var html = bodyEl.innerHTML;
 
