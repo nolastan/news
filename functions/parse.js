@@ -22,6 +22,7 @@ exports.handler = async event => {
     var imageUrl;
     if(imageEl) {
       imageUrl = imageEl.getAttribute('src');
+      bodyEl.removeChild(imageEl);
     }
 
     var html = bodyEl.innerHTML;
