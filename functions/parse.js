@@ -10,21 +10,24 @@ exports.handler = async event => {
     let text = await request.text();
 
     const dom = await new JSDOM(text);
-    html = dom.window.document.querySelector("#main-body").innerHTML;
-    html = `
+    var bodyEl = dom.window.document.querySelector("#main-body");
+    const headline = bodyEl.querySelector("h1");
+    bodyEl.removeChild(headline);
+
+    var html = `
       <html>
         <head>
           <meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
         </head>
         <body>
-          ${html}
+          ${bodyEl.innerHTML}
         </body>
       </html>  
     `
 
     const response = {
         statusCode: request.status,
-        body: html,
+        body: JSON.stringify(html),
         header: request.headers
     };
 
