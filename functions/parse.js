@@ -25,6 +25,8 @@ exports.handler = async event => {
       </html>  
     `
 
+    html = html.replace("# # #", ""); // random characters at end of press releases
+
     const response = {
         statusCode: request.status,
         body: JSON.stringify(html),
