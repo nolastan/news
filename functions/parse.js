@@ -9,27 +9,28 @@ exports.handler = async event => {
     let request = await fetch(url);
     let text = await request.text();
 
+    // Get DOM
     const dom = await new JSDOM(text);
     var bodyEl = dom.window.document.querySelector("#main-body");
+
+    // Remove Headline
     const headline = bodyEl.querySelector("h1");
     bodyEl.removeChild(headline);
 
-    var html = `
-      <html>
-        <head>
-          <meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
-        </head>
-        <body>
-          ${bodyEl.innerHTML}
-        </body>
-      </html>  
-    `
+    // Get Image
+    const imageEl = bodyEl.querySelector('.govd_template_image');
+    imageUrl = imageEl.getAttribute('src');
+
+    var html = bodyEl.innerHTML;
 
     html = html.replace("# # #", ""); // random characters at end of press releases
 
     const response = {
         statusCode: request.status,
-        body: JSON.stringify(html),
+        body: JSON.stringify({
+          html: html,
+          image: imageUrl
+        }),
         header: request.headers
     };
 
