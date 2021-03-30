@@ -28,9 +28,23 @@ exports.handler = async event => {
     bodyEl.removeChild(imageEl);
   }
 
+  // Replace URLs
+  const linkEls = bodyEl.querySelectorAll("a[href]");
+
+  linkEls.forEach(el => {
+    let linkUrl = el.getAttribute('href');
+    el.setAttribute('href', cleanUrl(linkUrl));
+  });
+
+  // begin HTML transformations
+
   // Remove extra footer characters
   var html = bodyEl.innerHTML;
-  html = html.replace("# # #", ""); // random characters at end of press releases
+  html = html.replace("# # #", "");
+
+  // Remove "NEW ORLEANS —" intro
+  html = html.replace("NEW ORLEANS — ", "");
+
 
   const response = {
       statusCode: request.status,
@@ -42,4 +56,16 @@ exports.handler = async event => {
   };
 
   return response;
+}
+
+function cleanUrl(url) {
+
+  // Remove utm parameters
+  url = url.replace(/(?<=&|\?)utm_.*?(&|$)/igm, "");
+
+  // Remove trailing `?`
+  url = url.replace(/\?$/, "");
+
+  return url;
+
 }
