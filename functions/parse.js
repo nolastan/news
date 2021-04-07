@@ -1,3 +1,5 @@
+const { link } = require("fs");
+
 exports.handler = async event => {
 
   const bulletin = event.queryStringParameters.bulletin;
@@ -17,7 +19,7 @@ exports.handler = async event => {
   // Remove Headline
   const headline = bodyEl.querySelector("h1");
   if(headline) {
-    bodyEl.removeChild(headline);
+    headline.parentNode.removeChild(headline);
   }
 
   // Get Image
@@ -25,7 +27,7 @@ exports.handler = async event => {
   var imageUrl;
   if(imageEl) {
     imageUrl = imageEl.getAttribute('src');
-    bodyEl.removeChild(imageEl);
+    imageEl.parentNode.removeChild(imageEl);
   }
 
   // Replace URLs
