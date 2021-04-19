@@ -13,22 +13,22 @@ exports.handler = async event => {
   let title = extractHeadline(dom)
   let image = extractImage(dom)
   let content = extractContent(dom)
-  // get redirected `source`
+  // TODO get redirected `source`
 
   title = titleCase(title.toLowerCase())
   title = shortenTitle(title)
 
   content = clearWhitespace(content)
-  // Apply tags
-  // Trim intro and footer
-  // common replacements/removals
+  // TODO Apply tags
+  // TODO Trim intro and footer
+  // TODO common replacements/removals
 
     // LINKS
-      // Remove tracking params
-      // Create visual bookmark
+      // TODO Remove tracking params
+      // TODO Create visual bookmark
 
   // IMAGE
-    // If no image, apply based on tags
+    // TODO If no image, apply based on tags
 
     const response = {
       statusCode: 200,
