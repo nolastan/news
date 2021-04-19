@@ -1,0 +1,10 @@
+{
+  "scripts": {
+    "debug": "netlify dev --inspect"
+  },
+  "dependencies": {
+    "jsdom": "^16.5.3",
+    "node-fetch": "^2.6.1",
+    "title-case": "^3.0.3"
+  }
+}
