@@ -10,7 +10,7 @@ exports.handler = async event => {
 
   let [dom, source] = await getBulletinDom(endpoint)
   
-  let title = extractHeadline(dom)
+  let title = extractTitle(dom)
   let image = extractImage(dom)
   let content = extractContent(dom)
 
@@ -23,7 +23,6 @@ exports.handler = async event => {
   // TODO common replacements/removals
 
     // LINKS
-      // TODO Remove tracking params
       // TODO Create visual bookmark
 
   // IMAGE
@@ -54,17 +53,24 @@ async function getBulletinDom(endpoint) {
   }
 }
 
-function extractHeadline(dom) {
-  const headline = dom.querySelector('h1')
-  if(headline) {
-    headline.parentNode.removeChild(headline)
+function extractTitle(dom) {
+  // Mayor uses multiple h1s as line breaks
+  // So we need to combine them
+
+  const headingEls = dom.querySelectorAll('h1')
+  let titles = []
+
+  for(const headingEl of headingEls) {
+    titles.push(headingEl.textContent)
+    headingEl.parentNode.removeChild(headingEl)
   }
-  return headline.textContent
+
+  return titles.join(" ")
 }
 
 function extractImage(dom) {
   let imageUrl
-  
+
   const imageEl = dom.querySelector('.govd_template_image')
   if(imageEl) {
     imageUrl = imageEl.getAttribute('src')
@@ -74,9 +80,13 @@ function extractImage(dom) {
 }
 
 function extractContent(dom) {
-  content = dom.textContent
-  if(content.includes("NEW ORLEANS —")) {
-    content = content.split("NEW ORLEANS —")[1]
+  content = removeTrackingCodes(dom).innerHTML
+
+  if(content.includes("NEW ORLEANS —&nbsp;")) {
+    content = content.split("NEW ORLEANS —&nbsp;")[1]
+  }
+  if(content.includes("NEW ORLEANS — ")) {
+    content = content.split("NEW ORLEANS — ")[1]
   }
   content = content.split("# # #")[0]
   return content
@@ -91,6 +101,25 @@ function shortenTitle(title) {
 
 function clearWhitespace(content) {
   content = content.trim()
-  content = content.split(/\n\s\n/).join("\n")
+  content = content.split("</p>\n<p").join("</p><p")
+  content = content.split("<br>").join("")
   return content
+}
+
+function removeTrackingCodes(dom) {
+  const linkEls = dom.querySelectorAll("a[href]")
+
+  linkEls.forEach(el => {
+    let linkUrl = el.getAttribute('href')
+    
+    // Remove utm parameters
+    linkUrl = linkUrl.replace(/(?<=&|\?)utm_.*?(&|$)/igm, "");
+
+    // Remove trailing `?`
+    linkUrl = linkUrl.replace(/\?$/, "");
+    
+    el.setAttribute('href', linkUrl)
+  })
+
+  return dom
 }
