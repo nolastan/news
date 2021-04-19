@@ -6,14 +6,13 @@ const { JSDOM } = jsdom;
 
 exports.handler = async event => {
   const bulletin = event.queryStringParameters.bulletin
-  const source = `https://lnks.gd/l/${bulletin}`
+  const endpoint = `https://lnks.gd/l/${bulletin}`
 
-  let dom = await getBulletinDom(source)
+  let [dom, source] = await getBulletinDom(endpoint)
   
   let title = extractHeadline(dom)
   let image = extractImage(dom)
   let content = extractContent(dom)
-  // TODO get redirected `source`
 
   title = titleCase(title.toLowerCase())
   title = shortenTitle(title)
@@ -43,15 +42,13 @@ exports.handler = async event => {
   return response;
 }
 
-async function getBulletinDom(source) {
-
-  let response, page, article
+async function getBulletinDom(endpoint) {
   try {
-    response = await fetch(source)
-    page = await response.text()
+    let response = await fetch(endpoint)
+    let page = await response.text()
     page = new JSDOM(page)
-    article = page.window.document.querySelector("#main-body")
-    return article
+    let article = page.window.document.querySelector("#main-body")
+    return [article, response.url]
   } catch (err) {
     console.log(err.message)
   }
