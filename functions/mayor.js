@@ -63,6 +63,8 @@ function extractHeadline(dom) {
 }
 
 function extractImage(dom) {
+  let imageUrl
+  
   const imageEl = dom.querySelector('.govd_template_image')
   if(imageEl) {
     imageUrl = imageEl.getAttribute('src')
