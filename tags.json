@@ -1,0 +1,88 @@
+[
+  {
+     "name":"Bikes",
+     "image":"",
+     "triggers":[
+        "bikes",
+        "bicycles"
+     ]
+  },
+  {
+     "name":"Events",
+     "image":"",
+     "triggers":[
+        "community meeting"
+     ]
+  },
+  {
+     "name":"Road Work",
+     "image":"",
+     "triggers":[
+        "roadwork"
+     ]
+  },
+  {
+     "name":"Sanitation",
+     "image":"",
+     "triggers":[
+        "recycling",
+        "sanitation",
+        "sewerage"
+     ]
+  },
+  {
+     "name":"Weather",
+     "image":"",
+     "triggers":[
+        "heavy rain",
+        "storms",
+        "flash flood"
+     ]
+  },
+  {
+     "name":"Capital Projects",
+     "image":"",
+     "triggers":[
+        "redevelopment",
+        "RFP"
+     ]
+  },
+  {
+     "name":"Criminal Justice",
+     "image":"",
+     "triggers":[
+        "jail",
+        "prison",
+        "sheriff"
+     ]
+  },
+  {
+     "name":"Transit",
+     "image":"",
+     "triggers":[
+        "rta",
+        "new links",
+        "regional transit authority",
+        "jefferson transit",
+        "Office of Transportation"
+     ]
+  },
+  {
+     "name":"Covid",
+     "image":"",
+     "triggers":[
+        "vaccine",
+        "covid",
+        "coronavirus",
+        "COVID-19"
+     ]
+  },
+  {
+     "name":"Police",
+     "image":"",
+     "triggers":[
+        "nopd",
+        "police"
+     ]
+  }
+]

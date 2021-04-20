@@ -18,7 +18,8 @@ exports.handler = async event => {
   title = shortenTitle(title)
 
   content = clearWhitespace(content)
-  // TODO Apply tags
+  let tags = applyTags(content)
+
   // TODO Trim intro and footer
   // TODO common replacements/removals
 
@@ -31,7 +32,7 @@ exports.handler = async event => {
     const response = {
       statusCode: 200,
       body: JSON.stringify({
-        title, content, image, source
+        title, content, image, source, tags
       }),
       headers: {
         'Content-Type': 'application/json'
@@ -122,4 +123,23 @@ function removeTrackingCodes(dom) {
   })
 
   return dom
+}
+
+function applyTags(content) {
+  const tags = require('../tags.json')
+  let result = []
+
+  for(const tag of tags) {
+    for(const trigger of tag.triggers) {
+      if(content.includes(trigger)) {
+        result.push({
+          tag: tag.name,
+          image: tag.image,
+          trigger
+        })
+      }
+    }
+  }
+
+  return result
 }
