@@ -22,19 +22,14 @@ exports.handler = async event => {
 
   content = clearWhitespace(content)
 
-  // TODO common replacements/removals
-
-    // LINKS
-      // TODO Create visual bookmark
-
-    const response = {
-      statusCode: 200,
-      body: JSON.stringify({
-        title, content, image, source, tags
-      }),
-      headers: {
-        'Content-Type': 'application/json'
-      }
+  const response = {
+    statusCode: 200,
+    body: JSON.stringify({
+      title, content, image, source, tags
+    }),
+    headers: {
+      'Content-Type': 'application/json'
+    }
   };
 
   return response;
