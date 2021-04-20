@@ -2,6 +2,8 @@ const fetch = require('node-fetch')
 const jsdom = require('jsdom')
 const { titleCase } = require('title-case')
 
+const DEFAULT_IMAGE_URL = "https://www.nola.today/content/images/size/w2000/2021/04/IMG_2993.jpg"
+
 const { JSDOM } = jsdom;
 
 exports.handler = async event => {
@@ -11,23 +13,19 @@ exports.handler = async event => {
   let [dom, source] = await getBulletinDom(endpoint)
   
   let title = extractTitle(dom)
-  let image = extractImage(dom)
   let content = extractContent(dom)
+  let tags = applyTags(content)
+  let image = extractImage(dom) || applyImage(tags)
 
   title = titleCase(title.toLowerCase())
   title = shortenTitle(title)
 
   content = clearWhitespace(content)
-  let tags = applyTags(content)
 
-  // TODO Trim intro and footer
   // TODO common replacements/removals
 
     // LINKS
       // TODO Create visual bookmark
-
-  // IMAGE
-    // TODO If no image, apply based on tags
 
     const response = {
       statusCode: 200,
@@ -134,7 +132,7 @@ function applyTags(content) {
       // TODO regex to include punctuation
       if(content.includes(" " + trigger + " ")) {
         result.push({
-          tag: tag.name,
+          tag: tag.name, // TODO rename to `name` + update Zapier
           image: tag.image,
           trigger
         })
@@ -144,4 +142,12 @@ function applyTags(content) {
   }
 
   return result
+}
+
+function applyImage(tags) {
+  if(tags.length > 0) {
+    return tags[0].image
+  } else {
+    return DEFAULT_IMAGE_URL
+  }
 }

@@ -1,7 +1,7 @@
 [
   {
      "name":"Arts",
-     "image":"",
+     "image":"https://www.nola.today/content/images/2021/04/new-orleans-2038359_1920-1.jpg",
      "triggers":[
         "art",
         "murals",
@@ -10,7 +10,7 @@
   },
   {
    "name":"Bikes",
-   "image":"",
+   "image":"https://www.nola.today/content/images/2021/04/IMG_4773.jpg",
    "triggers":[
       "bikes",
       "bicycles"
@@ -18,21 +18,14 @@
   },
   {
      "name":"Events",
-     "image":"",
+     "image":"https://www.nola.today/content/images/2021/04/IMG_0465.jpg",
      "triggers":[
         "community meeting"
      ]
   },
   {
-     "name":"Road Work",
-     "image":"",
-     "triggers":[
-        "roadwork"
-     ]
-  },
-  {
      "name":"Sanitation",
-     "image":"",
+     "image":"https://www.nola.today/content/images/2021/04/metal-264474_1920.jpg",
      "triggers":[
         "recycling",
         "sanitation",
@@ -41,7 +34,7 @@
   },
   {
      "name":"Weather",
-     "image":"",
+     "image":"https://www.nola.today/content/images/2021/04/flash-2568381_1920.jpg",
      "triggers":[
         "heavy rain",
         "storms",
@@ -50,7 +43,7 @@
   },
   {
      "name":"Capital Projects",
-     "image":"",
+     "image":"https://www.nola.today/content/images/2021/04/IMG_4645.png",
      "triggers":[
         "redevelopment",
         "RFP"
@@ -58,7 +51,7 @@
   },
   {
      "name":"Criminal Justice",
-     "image":"",
+     "image":"https://www.nola.today/content/images/2021/04/IMG_4568.png",
      "triggers":[
         "jail",
         "prison",
@@ -67,7 +60,7 @@
   },
   {
      "name":"Transit",
-     "image":"",
+     "image":"https://www.nola.today/content/images/2021/04/new-orleans-4008968_1920.jpg",
      "triggers":[
         "rta",
         "new links",
@@ -78,7 +71,7 @@
   },
   {
      "name":"Covid",
-     "image":"",
+     "image":"https://www.nola.today/content/images/2021/04/Sleeves-Up-Twitter-English-Baby-Dolls.jpg",
      "triggers":[
         "vaccine",
         "covid",
@@ -87,11 +80,13 @@
      ]
   },
   {
-     "name":"Police",
-     "image":"",
+     "name":"Public Safety",
+     "image":"https://www.nola.today/content/images/2021/04/fire-2341293_1920.jpg",
      "triggers":[
         "nopd",
-        "police"
+        "police",
+        "fire",
+        "violence"
      ]
   }
 ]
