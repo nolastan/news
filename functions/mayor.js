@@ -131,12 +131,14 @@ function applyTags(content) {
 
   for(const tag of tags) {
     for(const trigger of tag.triggers) {
-      if(content.includes(trigger)) {
+      // TODO regex to include punctuation
+      if(content.includes(" " + trigger + " ")) {
         result.push({
           tag: tag.name,
           image: tag.image,
           trigger
         })
+        break
       }
     }
   }
