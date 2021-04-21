@@ -10,7 +10,7 @@ const { JSDOM } = jsdom;
 exports.handler = async event => {
 
   let title = decode(event.queryStringParameters.title)
-  let rawContent = decode(event.queryStringParameters.content)
+  let rawContent = decode(event.body)
   let source = event.queryStringParameters.source
 
   const dom = new JSDOM(rawContent).window.document
@@ -48,21 +48,6 @@ async function getBulletinDom(endpoint) {
   }
 }
 
-function extractTitle(dom) {
-  // Mayor uses multiple h1s as line breaks
-  // So we need to combine them
-
-  const headingEls = dom.querySelectorAll('h1')
-  let titles = []
-
-  for(const headingEl of headingEls) {
-    titles.push(headingEl.textContent)
-    headingEl.parentNode.removeChild(headingEl)
-  }
-
-  return titles.join(" ")
-}
-
 function extractImage(dom) {
   let imageUrl
 
@@ -84,5 +69,7 @@ function extractContent(dom) {
 function extractExcerpt(dom) {
   // TODO refactor to actually extract from base dom
   let excerpt = dom.querySelector(".field--name-field-synopsis")
-  return excerpt.textContent
+  if(excerpt) {
+    return excerpt.textContent
+  }
 }
