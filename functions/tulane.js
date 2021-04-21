@@ -26,7 +26,7 @@ exports.handler = async event => {
   const response = {
     statusCode: 200,
     body: JSON.stringify({
-      title, content, image, source, tags
+      title, content, image, source, tags, excerpt
     }),
     headers: {
       'Content-Type': 'application/json'
