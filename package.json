@@ -3,6 +3,7 @@
     "debug": "netlify dev --inspect"
   },
   "dependencies": {
+    "html-entities": "^2.3.2",
     "jsdom": "^16.5.3",
     "node-fetch": "^2.6.1",
     "title-case": "^3.0.3"
