@@ -70,6 +70,6 @@ function extractExcerpt(dom) {
   // TODO refactor to actually extract from base dom
   let excerpt = dom.querySelector(".field--name-field-synopsis")
   if(excerpt) {
-    return excerpt.textContent
+    return excerpt.textContent.substring(0, 300)
   }
 }
