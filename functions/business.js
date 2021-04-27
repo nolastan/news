@@ -42,7 +42,7 @@ exports.handler = async event => {
 }
 
 function getStreetViewImage(lat, lng) {
-  var src = `https://maps.googleapis.com/maps/api/streetview?size=600x400&location=${lng},${lat}&fov=120&key=${process.env.GOOGLE_KEY}`
+  var src = `https://maps.googleapis.com/maps/api/streetview?size=600x400&location=${lat},${lng}&fov=120&key=${process.env.GOOGLE_KEY}`
   return src
 }
 
