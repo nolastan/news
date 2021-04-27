@@ -50,9 +50,9 @@ function getMapImage(lat, lng) {
   var base_url = `https://api.mapbox.com/styles/v1`
   var marker_style = `pin-l-building`
   var marker_color = `f4f7f7`
-  var marker = `${marker_style}+${marker_color}(${lat},${lng})`
+  var marker = `${marker_style}+${marker_color}(${lng},${lat})`
   var map_style = `nolastan/cknc9bfbz1teg17p9blgfae26`
-  var src = `${base_url}/${map_style}/static/${marker}/${lat},${lng},15,0,52/1200x600?access_token=${process.env.MAPBOX_TOKEN}`
+  var src = `${base_url}/${map_style}/static/${marker}/${lng},${lat},15,0,52/1200x600?access_token=${process.env.MAPBOX_TOKEN}`
   return src
 }
 
