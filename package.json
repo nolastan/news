@@ -3,6 +3,7 @@
     "debug": "netlify dev --inspect"
   },
   "dependencies": {
+    "dotenv": "^8.2.0",
     "html-entities": "^2.3.2",
     "jsdom": "^16.5.3",
     "node-fetch": "^2.6.1",
