@@ -8,6 +8,9 @@ exports.handler = async event => {
   let events = [];
   let data = json.eventsByDates;
   for(date in data){
+    for(event of data[date]) {
+      event.date = date
+    }
     events.push(...data[date])
   }
 
