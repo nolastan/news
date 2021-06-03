@@ -6,7 +6,7 @@ exports.handler = async event => {
   const connectionOpts = {useNewUrlParser: true, useUnifiedTopology: true}
   
   try {
-    MongoClient.connect(connectionStr, connectionOpts, function(err, client) {
+    MongoClient.connect(connectionStr, connectionOpts, (err, client) => {
       if (err) throw err;
       const db = client.db('nolatoday');
 
@@ -20,8 +20,8 @@ exports.handler = async event => {
         return events;
       };
 
-      getCalendarsPromise().then(function(calendars) {
-        getEventsPromise(calendars).then(function(events) {
+      getCalendarsPromise().then( calendars => {
+        getEventsPromise(calendars).then( events => {
           saveEvents(db, events)
         })
       });
@@ -36,7 +36,7 @@ async function getCalendars(db) {
     db
      .collection('calendars')
      .find()
-     .toArray(function(err, data) {
+     .toArray( (err, data) => {
          err 
             ? reject(err) 
             : resolve(data);
@@ -72,7 +72,7 @@ async function saveEvents(db, events) {
     for(event of events) {
       db
         .collection('events')
-        .updateOne({uid: event.uid}, {$set: event}, {upsert: true }, function(err, res){
+        .updateOne({uid: event.uid}, {$set: event}, {upsert: true }, (err, res) => {
           err ? reject(err) : resolve(data)
         });
     }
