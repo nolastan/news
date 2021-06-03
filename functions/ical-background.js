@@ -3,9 +3,10 @@ const MongoClient = require('mongodb').MongoClient;
 
 exports.handler = async event => {
   const connectionStr = `mongodb+srv://${process.env.MONGODB_USERNAME}:${process.env.MONGODB_PASSWORD}@nola.uiwnl.mongodb.net/nolatoday?retryWrites=true&w=majority`;
+  const connectionOpts = {useNewUrlParser: true, useUnifiedTopology: true}
   
   try {
-    MongoClient.connect(connectionStr, {}, function(err, client) {
+    MongoClient.connect(connectionStr, connectionOpts, function(err, client) {
       if (err) throw err;
       const db = client.db('nolatoday');
 
