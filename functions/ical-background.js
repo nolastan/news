@@ -18,13 +18,11 @@ exports.handler = async event => {
 async function getCalendars(db) {
   return new Promise((resolve, reject) => {
     db
-     .collection('calendars')
-     .find()
-     .toArray( (err, data) => {
-         err 
-            ? reject(err) 
-            : resolve(data)
-       })
+      .collection('calendars')
+      .find({format: 'ics'})
+      .toArray( (err, data) => {
+        err ? reject(err) : resolve(data)
+      })
  })
 }
 
