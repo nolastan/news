@@ -16,12 +16,44 @@ const calendars = [
     url: "https://scatterjazz.com/events/?ical=1"
   },
   {
+    name: "The AllWays Lounge",
+    url: "https://theallwayslounge.net/calendar/?ical=1"
+  },
+  {
     name: "Capulet",
     url: "https://calendar.google.com/calendar/ical/c_qvc2g5hsfmssn65369njqiurfs%40group.calendar.google.com/public/basic.ics"
   },
   {
+    name: "21st Amendment",
+    url: "https://calendar.google.com/calendar/ical/okn90l2menuasgn595qugq85ho%40group.calendar.google.com/public/basic.ics"
+  },
+  {
+    name: "Art Klub",
+    url: "https://calendar.google.com/calendar/ical/connect.artklub%40gmail.com/public/basic.ics"
+  },
+  {
     name: "Bacchanal",
     url: "https://calendar.google.com/calendar/ical/bacchanalwine.com_5ph7ranikdn211398hh5i8advs%40group.calendar.google.com/public/basic.ics"
+  },
+  {
+    name: "The Blue Crab",
+    url: "https://calendar.google.com/calendar/ical/thebluecrabnola.com_obtu0il69hauvremeic6v6smio%40group.calendar.google.com/public/basic.ics"
+  },
+  {
+    name: "Casa Borrega",
+    url: "http://casaborrega.com/?plugin=all-in-one-event-calendar&controller=ai1ec_exporter_controller&action=export_events&no_html=true&ai1ec_cat_ids=21,25,22"
+  },
+  {
+    name: "Fair Grinds (St. Claude)",
+    url: "https://calendar.google.com/calendar/ical/v27e3g34clherajr8g4i7jdv14%40group.calendar.google.com/public/basic.ics"
+  },
+  {
+    name: "Fair Grinds",
+    url: "https://calendar.google.com/calendar/ical/930lff5q4ec496cgaoph05d5k4%40group.calendar.google.com/public/basic.ics"
+  },
+  {
+    name: "The Spotted Cat",
+    url: "https://calendar.google.com/calendar/ical/thespottedcatmusicclub%40gmail.com/public/basic.ics"
   }
 ]
 
@@ -48,6 +80,7 @@ async function importEvents(calendars) {
   const now = new Date()
 
   for(const calendar of calendars) {
+    console.log(calendar.name)
     data = await ical.async.fromURL(calendar.url)
     for(const key in data) {
       const event = data[key]
