@@ -1,30 +1,30 @@
-const ical = require('node-ical');
-const MongoClient = require('mongodb').MongoClient;
+const ical = require('node-ical')
+const MongoClient = require('mongodb').MongoClient
 
 exports.handler = async event => {
-  const connectionStr = `mongodb+srv://${process.env.MONGODB_USERNAME}:${process.env.MONGODB_PASSWORD}@nola.uiwnl.mongodb.net/nolatoday?retryWrites=true&w=majority`;
+  const connectionStr = `mongodb+srv://${process.env.MONGODB_USERNAME}:${process.env.MONGODB_PASSWORD}@nola.uiwnl.mongodb.net/nolatoday?retryWrites=true&w=majority`
   const connectionOpts = {useNewUrlParser: true, useUnifiedTopology: true}
   
   try {
     MongoClient.connect(connectionStr, connectionOpts, (err, client) => {
-      if (err) throw err;
-      const db = client.db('nolatoday');
+      if (err) throw err
+      const db = client.db('nolatoday')
 
       var getCalendarsPromise = async () => {
-        var calendars = await (getCalendars(db));
-        return calendars;
-      };
+        var calendars = await (getCalendars(db))
+        return calendars
+      }
 
       var getEventsPromise = async (calendars) => {
         const events = await importEvents(calendars)
-        return events;
-      };
+        return events
+      }
 
       getCalendarsPromise().then( calendars => {
         getEventsPromise(calendars).then( events => {
           saveEvents(db, events)
         })
-      });
+      })
     })
   } catch (e) {
     console.log(`Error: ${e}`)
@@ -39,9 +39,9 @@ async function getCalendars(db) {
      .toArray( (err, data) => {
          err 
             ? reject(err) 
-            : resolve(data);
-       });
- });
+            : resolve(data)
+       })
+ })
 }
 
 async function importEvents(calendars) {
@@ -74,7 +74,7 @@ async function saveEvents(db, events) {
         .collection('events')
         .updateOne({uid: event.uid}, {$set: event}, {upsert: true }, (err, res) => {
           err ? reject(err) : resolve(data)
-        });
+        })
     }
-  });
+  })
 }
