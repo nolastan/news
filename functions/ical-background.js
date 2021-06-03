@@ -5,30 +5,14 @@ exports.handler = async event => {
   const connectionStr = `mongodb+srv://${process.env.MONGODB_USERNAME}:${process.env.MONGODB_PASSWORD}@nola.uiwnl.mongodb.net?retryWrites=true&w=majority`
   const connectionOpts = {useNewUrlParser: true, useUnifiedTopology: true}
   
-  try {
-    MongoClient.connect(connectionStr, connectionOpts, (err, client) => {
-      if (err) throw err
-      const db = client.db('nolatoday')
+  MongoClient.connect(connectionStr, connectionOpts, (err, client) => {
+    if (err) throw err
+    const db = client.db('nolatoday')
 
-      var getCalendarsPromise = async () => {
-        var calendars = await (getCalendars(db))
-        return calendars
-      }
-
-      var getEventsPromise = async (calendars) => {
-        const events = await importEvents(calendars)
-        return events
-      }
-
-      getCalendarsPromise().then( calendars => {
-        getEventsPromise(calendars).then( events => {
-          saveEvents(db, events)
-        })
-      })
-    })
-  } catch (e) {
-    console.log(`Error: ${e}`)
-  }
+    getCalendars(db)
+      .then( calendars => { return importEvents(calendars) } )
+      .then( events => { return saveEvents(db, events) } )
+  })
 }
 
 async function getCalendars(db) {
@@ -69,7 +53,7 @@ async function importEvents(calendars) {
 async function saveEvents(db, events) {
   console.log(`Upserting ${events.length} events.`)
   return new Promise((resolve, reject) => {
-    for(event of events) {
+    for(const event of events) {
       db
         .collection('events')
         .updateOne({uid: event.uid}, {$set: event}, {upsert: true }, (err, res) => {
