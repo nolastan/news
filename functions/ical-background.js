@@ -18,8 +18,9 @@ exports.handler = async event => {
     
     const db = client.db('nolatoday')
 
-    let calendars = await getCalendars(db)
-    console.log(calendars)
+    // let calendars = await getCalendars(db)
+    let count = await db.collection('events').count()
+    console.log(count)
       // .then( calendars => { return importEvents(calendars) } )
       // .then( events => { return saveEvents(db, events) } )
       // .catch ( err => {
