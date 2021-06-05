@@ -38,7 +38,7 @@ async function getCalendars(db) {
       .find({format: 'ics'})
       .toArray()
     console.log(`calendars: ${JSON.stringify(calendars)}`)
-    return calendars
+    resolve(calendars)
  })
 }
 
