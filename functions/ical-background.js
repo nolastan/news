@@ -29,9 +29,9 @@ exports.handler = async event => {
 }
 
 async function getCalendars(db) {
-  return new Promise((resolve, reject) => {
+  return new Promise(async (resolve, reject) => {
     console.log("getting calendars")
-    db
+    await db
       .collection('calendars')
       .find({format: 'ics'})
       .toArray( (err, data) => {
