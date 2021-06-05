@@ -32,11 +32,14 @@ async function importEvents(calendars) {
     const now = new Date()
   
     for(const calendar of calendars) {
+      console.log('loading calendar: ' + calendar.name)
       data = await ical.async.fromURL(calendar.url)
       for(const key in data) {
+        console.log('importing events from ' + calendar.name)
         const event = data[key]
         if(event.type == 'VEVENT') {
           if(new Date(event.start) > now && event.summary) {
+            console.log('upcoming event found for ' + calendar.name)
             event.venue = calendar.name
             events.push(event)
             console.log(`Imported "${event.summary}" from ${calendar.name}.`)
