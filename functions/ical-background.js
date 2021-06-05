@@ -36,11 +36,9 @@ async function getCalendars(db) {
     let calendars = db
       .collection('calendars')
       .find({format: 'ics'})
-      .toArray( (err, data) => {
-        console.log("to array", err, data)
-        err ? reject(err) : resolve(data)
-      })
+      .toArray()
     console.log(`calendars: ${JSON.stringify(calendars)}`)
+    return calendars
  })
 }
 
