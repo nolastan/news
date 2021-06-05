@@ -18,15 +18,13 @@ exports.handler = async event => {
     
     const db = client.db('nolatoday')
 
-    // let calendars = await getCalendars(db)
-    let count = await db.collection('events').count()
-    console.log(count)
-      // .then( calendars => { return importEvents(calendars) } )
-      // .then( events => { return saveEvents(db, events) } )
-      // .catch ( err => {
-      //   console.log("ERROR 3!")
-      //   console.log(err)
-      // })
+    getCalendars(db)
+      .then( calendars => { return importEvents(calendars) } )
+      .then( events => { return saveEvents(db, events) } )
+      .catch ( err => {
+        console.log("ERROR 3!")
+        console.log(err)
+      })
   } catch(err) {
     console.log("ERROR 2!")
     console.log(err)
@@ -36,15 +34,20 @@ exports.handler = async event => {
 
 async function getCalendars(db) {
   console.log("Retrieving list of calendars…")
-  return new Promise((resolve, reject) => {
+  
+  return new Promise(async (resolve, reject) => {
     console.log("Inside promise")
-    db
+    let count = await db.collection('calendars').count()
+    console.log(JSON.stringify(count))
+    let calendars = db
       .collection('calendars')
       .find({format: 'ics'})
       .toArray( (err, data) => {
         console.log(err, data)
         err ? reject(err) : resolve(data)
       })
+      console.log(JSON.stringify(calendars))
+    return calendars
  })
 }
 
