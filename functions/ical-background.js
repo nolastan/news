@@ -5,17 +5,23 @@ exports.handler = async event => {
   const connectionStr = `mongodb+srv://${process.env.MONGODB_USERNAME}:${process.env.MONGODB_PASSWORD}@nola.uiwnl.mongodb.net?retryWrites=true&w=majority`
   const connectionOpts = {useNewUrlParser: true, useUnifiedTopology: true}
   
-  MongoClient.connect(connectionStr, connectionOpts, (err, client) => {
-    if (err) throw err
-    const db = client.db('nolatoday')
+  try {
+    MongoClient.connect(connectionStr, connectionOpts, (err, client) => {
+      if (err) throw err
+      console.log("Connected to Mongo")
+      const db = client.db('nolatoday')
 
-    getCalendars(db)
-      .then( calendars => { return importEvents(calendars) } )
-      .then( events => { return saveEvents(db, events) } )
-  })
+      getCalendars(db)
+        .then( calendars => { return importEvents(calendars) } )
+        .then( events => { return saveEvents(db, events) } )
+    })
+  } catch (e) {
+    console.log(e)
+  }
 }
 
 async function getCalendars(db) {
+  console.log("Retrieving list of calendars...")
   return new Promise((resolve, reject) => {
     db
       .collection('calendars')
@@ -27,6 +33,7 @@ async function getCalendars(db) {
 }
 
 async function importEvents(calendars) {
+  console.log("Importing events...")
   return new Promise(async (resolve, reject)=> {
     let events = []
     const now = new Date()
