@@ -35,9 +35,9 @@ exports.handler = async event => {
 async function getCalendars(db) {
   console.log("Retrieving list of calendars…")
   
-  return new Promise(async (resolve, reject) => {
+  return new Promise( (resolve, reject) => {
     console.log("Inside promise")
-    let count = await db.collection('calendars').count()
+    let count = db.collection('calendars').count()
     console.log(JSON.stringify(count))
     let calendars = await db
       .collection('calendars')
