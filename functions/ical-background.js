@@ -43,28 +43,31 @@ async function importEvents(calendars) {
     for(const calendar of calendars) {
       console.log('loading calendar: ' + calendar.name)
       let data = await ical.async.fromURL(calendar.url)
-      events.push(processICS(data, calendar.name))
+      events.push(await processICS(data, calendar.name))
     }
     resolve(events)
   })
 }
 
 function processICS(data, venue) {
-  let events = []
-  const now = new Date()
-  for(const key in data) {
-    console.log('importing events from ' + venue)
-    const event = data[key]
-    if(event.type == 'VEVENT') {
-      if(new Date(event.start) > now && event.summary) {
-        console.log('upcoming event found for ' + venue)
-        event.venue = venue
-        events.push(event)
-        console.log(`Imported "${event.summary}" from ${venue}.`)
+  return new Promise(async (resolve, reject)=> {
+    let events = []
+    const now = new Date()
+    console.log('inside process ICS ' + venue)
+    for(const key in data) {
+      console.log('importing events from ' + venue)
+      const event = data[key]
+      if(event.type == 'VEVENT') {
+        if(new Date(event.start) > now && event.summary) {
+          console.log('upcoming event found for ' + venue)
+          event.venue = venue
+          events.push(event)
+          console.log(`Imported "${event.summary}" from ${venue}.`)
+        }
       }
     }
-  }
-  return events
+    resolve(events)
+  })
 }
 
 async function saveEvents(db, events) {
