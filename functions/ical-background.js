@@ -6,26 +6,22 @@ process.on('uncaughtException', function(err) {
 });
 
 exports.handler = async event => {
-
+  const connectionStr = `mongodb+srv://${process.env.MONGODB_USERNAME}:${process.env.MONGODB_PASSWORD}@nola.uiwnl.mongodb.net?retryWrites=true&w=majority`
+  const connectionOpts = {useNewUrlParser: true, useUnifiedTopology: true}
+  
   const client = new MongoClient(connectionStr, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   });
 
-  const connectionStr = `mongodb+srv://${process.env.MONGODB_USERNAME}:${process.env.MONGODB_PASSWORD}@nola.uiwnl.mongodb.net?retryWrites=true&w=majority`
-  const connectionOpts = {useNewUrlParser: true, useUnifiedTopology: true}
-  
   try {
-    MongoClient.connect(connectionStr, connectionOpts, (err, client) => {
-      if (err) throw err
-      await client.connect();
-    
-      const db = client.db('nolatoday')
+    await client.connect();
+  
+    const db = client.db('nolatoday')
 
-      getCalendars(db)
-        .then( calendars => { return importEvents(calendars) } )
-        .then( events => { return saveEvents(db, events) } )
-    })
+    getCalendars(db)
+      .then( calendars => { return importEvents(calendars) } )
+      .then( events => { return saveEvents(db, events) } )
   } catch(err) {
     console.log("ERROR!")
     console.log(err)
