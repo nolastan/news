@@ -39,15 +39,12 @@ async function getCalendars(db) {
     console.log("Inside promise")
     let count = await db.collection('calendars').count()
     console.log(JSON.stringify(count))
-    let calendars = db
+    let calendars = await db
       .collection('calendars')
       .find({format: 'ics'})
-      .toArray( (err, data) => {
-        console.log(err, data)
-        err ? reject(err) : resolve(data)
-      })
-    console.log(JSON.stringify(calendars))
-    return calendars
+      .toArray()
+    console.log("CALENDARS: " + JSON.stringify(calendars))
+    resolve(calendars)
  })
 }
 
@@ -69,8 +66,9 @@ async function importEvents(calendars) {
           }
         }
       }
-      resolve(events)
     }
+    console.log("EVENTS: " + JSON.stringify(events))
+    resolve(events)
   })
 }
 
