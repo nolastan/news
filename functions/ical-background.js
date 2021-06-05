@@ -5,22 +5,22 @@ exports.handler = async event => {
   console.log('ical import function triggered')
   const connectionStr = `mongodb+srv://${process.env.MONGODB_USERNAME}:${process.env.MONGODB_PASSWORD}@nola.uiwnl.mongodb.net?retryWrites=true&w=majority`
   const connectionOpts = {useNewUrlParser: true, useUnifiedTopology: true}
+
+  const client = new MongoClient(connectionStr, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  });
   
   console.log('Connecting to Mongo…')
   try {
-    MongoClient.connect(connectionStr, connectionOpts, (err, client) => {
-      if (err) {
-        console.log("ERROR!")
-        console.log(err)
-        throw err
-      } 
-      console.log("Connected to Mongo")
-      const db = client.db('nolatoday')
-  
-      getCalendars(db)
-        .then( calendars => { return importEvents(calendars) } )
-        .then( events => { return saveEvents(db, events) } )
-    })  
+    console.log("Trying…")
+    await client.connect();
+    
+    const db = client.db('nolatoday')
+
+    getCalendars(db)
+      .then( calendars => { return importEvents(calendars) } )
+      .then( events => { return saveEvents(db, events) } )
   } catch(err) {
     console.log("ERROR 2!")
     console.log(err)
