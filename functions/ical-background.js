@@ -7,19 +7,24 @@ exports.handler = async event => {
   const connectionOpts = {useNewUrlParser: true, useUnifiedTopology: true}
   
   console.log('Connecting to Mongo…')
-  MongoClient.connect(connectionStr, connectionOpts, (err, client) => {
-    if (err) {
-      console.log("ERROR!")
-      console.log(err)
-      throw err
-    } 
-    console.log("Connected to Mongo")
-    const db = client.db('nolatoday')
-
-    getCalendars(db)
-      .then( calendars => { return importEvents(calendars) } )
-      .then( events => { return saveEvents(db, events) } )
-  })
+  try {
+    MongoClient.connect(connectionStr, connectionOpts, (err, client) => {
+      if (err) {
+        console.log("ERROR!")
+        console.log(err)
+        throw err
+      } 
+      console.log("Connected to Mongo")
+      const db = client.db('nolatoday')
+  
+      getCalendars(db)
+        .then( calendars => { return importEvents(calendars) } )
+        .then( events => { return saveEvents(db, events) } )
+    })  
+  } catch(err) {
+    console.log("ERROR 2!")
+    console.log(err)
+  }
   console.log("End of function.")
 }
 
