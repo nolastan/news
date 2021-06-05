@@ -6,12 +6,20 @@ process.on('uncaughtException', function(err) {
 });
 
 exports.handler = async event => {
+
+  const client = new MongoClient(connectionStr, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  });
+
   const connectionStr = `mongodb+srv://${process.env.MONGODB_USERNAME}:${process.env.MONGODB_PASSWORD}@nola.uiwnl.mongodb.net?retryWrites=true&w=majority`
   const connectionOpts = {useNewUrlParser: true, useUnifiedTopology: true}
   
   try {
     MongoClient.connect(connectionStr, connectionOpts, (err, client) => {
       if (err) throw err
+      await client.connect();
+    
       const db = client.db('nolatoday')
 
       getCalendars(db)
