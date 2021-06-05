@@ -8,21 +8,22 @@ process.on('uncaughtException', function(err) {
 exports.handler = async event => {
   const connectionStr = `mongodb+srv://${process.env.MONGODB_USERNAME}:${process.env.MONGODB_PASSWORD}@nola.uiwnl.mongodb.net?retryWrites=true&w=majority`
   const connectionOpts = {useNewUrlParser: true, useUnifiedTopology: true}
-  
+
   const client = new MongoClient(connectionStr, connectionOpts);
 
   try {
     await client.connect();
-  
+
     const db = client.db('nolatoday')
 
-    getCalendars(db)
+    let events = await getCalendars(db)
       .then( async calendars => { return await importEvents(calendars) } )
-      .then( events => { return saveEvents(db, events) } )
+      // .then( events => { return saveEvents(db, events) } )
   } catch(err) {
     console.log("ERROR!")
     console.log(err)
   }
+  return events
 }
 
 async function getCalendars(db) {
@@ -39,7 +40,7 @@ async function getCalendars(db) {
 async function importEvents(calendars) {
   return new Promise(async (resolve, reject)=> {
     let events = []
-    
+
     for(const calendar of calendars) {
       console.log('loading calendar: ' + calendar.name)
       let data = await ical.async.fromURL(calendar.url)
