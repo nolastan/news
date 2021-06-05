@@ -39,11 +39,13 @@ async function getCalendars(db) {
 async function importEvents(calendars) {
   return new Promise(async (resolve, reject)=> {
     let events = []
-  
+    
     for(const calendar of calendars) {
       console.log('loading calendar: ' + calendar.name)
       let data = await ical.async.fromURL(calendar.url)
-      events.push(await processICS(data, calendar.name))
+      console.log("ical result: " + JSON.stringify(data))
+      events.push(data)
+      // events.push(await processICS(data, calendar.name))
     }
     resolve(events)
   })
