@@ -18,13 +18,14 @@ exports.handler = async event => {
     
     const db = client.db('nolatoday')
 
-    getCalendars(db)
-      .then( calendars => { return importEvents(calendars) } )
-      .then( events => { return saveEvents(db, events) } )
-      .catch ( err => {
-        console.log("ERROR 3!")
-        console.log(err)
-      })
+    let calendars = await getCalendars(db)
+    console.log(calendars)
+      // .then( calendars => { return importEvents(calendars) } )
+      // .then( events => { return saveEvents(db, events) } )
+      // .catch ( err => {
+      //   console.log("ERROR 3!")
+      //   console.log(err)
+      // })
   } catch(err) {
     console.log("ERROR 2!")
     console.log(err)
