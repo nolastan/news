@@ -9,10 +9,7 @@ exports.handler = async event => {
   const connectionStr = `mongodb+srv://${process.env.MONGODB_USERNAME}:${process.env.MONGODB_PASSWORD}@nola.uiwnl.mongodb.net?retryWrites=true&w=majority`
   const connectionOpts = {useNewUrlParser: true, useUnifiedTopology: true}
   
-  const client = new MongoClient(connectionStr, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  });
+  const client = new MongoClient(connectionStr, connectionOpts);
 
   try {
     await client.connect();
@@ -47,9 +44,11 @@ async function importEvents(calendars) {
     for(const calendar of calendars) {
       console.log('loading calendar: ' + calendar.name)
       let data = await ical.async.fromURL(calendar.url)
-      for(const key in data) {
+      console.log(JSON.stringify(data))
+      let rawEvents = Object.entries(data)
+      for( const rawEvent of rawEvents) {
+        const event = rawEvent[1]
         console.log('importing events from ' + calendar.name)
-        const event = data[key]
         if(event.type == 'VEVENT') {
           if(new Date(event.start) > now && event.summary) {
             console.log('upcoming event found for ' + calendar.name)
@@ -71,7 +70,7 @@ async function saveEvents(db, events) {
       db
         .collection('events')
         .updateOne({uid: event.uid}, {$set: event}, {upsert: true }, (err, res) => {
-          err ? reject(err) : resolve(data)
+          err ? reject(err) : resolve(res)
         })
     }
   })
