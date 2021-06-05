@@ -33,13 +33,14 @@ async function getCalendars(db) {
     console.log("getting calendars")
     let count = db.collection('calendars').countDocuments()
     console.log(`count: ${count}`)
-    await db
+    let calendars = db
       .collection('calendars')
       .find({format: 'ics'})
       .toArray( (err, data) => {
         console.log("to array", err, data)
         err ? reject(err) : resolve(data)
       })
+    console.log(`calendars: ${JSON.stringify(calendars)}`)
  })
 }
 
