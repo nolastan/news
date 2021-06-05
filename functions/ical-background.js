@@ -35,10 +35,12 @@ exports.handler = async event => {
 async function getCalendars(db) {
   console.log("Retrieving list of calendars…")
   return new Promise((resolve, reject) => {
+    console.log("Inside promise")
     db
       .collection('calendars')
       .find({format: 'ics'})
       .toArray( (err, data) => {
+        console.log(err, data)
         err ? reject(err) : resolve(data)
       })
  })
