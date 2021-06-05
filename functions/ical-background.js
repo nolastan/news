@@ -20,7 +20,7 @@ exports.handler = async event => {
     const db = client.db('nolatoday')
 
     getCalendars(db)
-      .then( calendars => { return await importEvents(calendars) } )
+      .then( async calendars => { return await importEvents(calendars) } )
       .then( events => { return saveEvents(db, events) } )
   } catch(err) {
     console.log("ERROR!")
