@@ -11,19 +11,15 @@ exports.handler = async event => {
 
   const client = new MongoClient(connectionStr, connectionOpts);
 
-  try {
-    await client.connect();
+  await client.connect();
 
-    const db = client.db('nolatoday')
+  const db = client.db('nolatoday')
 
-    let events = await getCalendars(db)
-      .then( async calendars => { return await importEvents(calendars) } )
-      // .then( events => { return saveEvents(db, events) } )
-  } catch(err) {
-    console.log("ERROR!")
-    console.log(err)
-  }
-  return events
+  let result = await getCalendars(db)
+    .then( async calendars => { return await importEvents(calendars) } )
+    .then( events => { return saveEvents(db, events) } )
+
+  return result
 }
 
 async function getCalendars(db) {
@@ -42,35 +38,28 @@ async function importEvents(calendars) {
     let events = []
 
     for(const calendar of calendars) {
-      console.log('loading calendar: ' + calendar.name)
       let data = await ical.async.fromURL(calendar.url)
-      console.log("ical result: " + JSON.stringify(data))
-      events.push(data)
-      // events.push(await processICS(data, calendar.name))
+      events.push(...processICS(data, calendar.name))
     }
+
     resolve(events)
   })
 }
 
 function processICS(data, venue) {
-  return new Promise(async (resolve, reject)=> {
-    let events = []
-    const now = new Date()
-    console.log('inside process ICS ' + venue)
-    for(const key in data) {
-      console.log('importing events from ' + venue)
-      const event = data[key]
-      if(event.type == 'VEVENT') {
-        if(new Date(event.start) > now && event.summary) {
-          console.log('upcoming event found for ' + venue)
-          event.venue = venue
-          events.push(event)
-          console.log(`Imported "${event.summary}" from ${venue}.`)
-        }
+  let events = []
+  const now = new Date()
+  for(const key in data) {
+    const event = data[key]
+    if(event.type == 'VEVENT') {
+      if(new Date(event.start) > now && event.summary) {
+        event.venue = venue
+        events.push(event)
+        console.log(`Imported "${event.summary}" from ${venue}.`)
       }
     }
-    resolve(events)
-  })
+  }
+  return events
 }
 
 async function saveEvents(db, events) {
