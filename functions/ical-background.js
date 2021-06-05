@@ -21,6 +21,10 @@ exports.handler = async event => {
     getCalendars(db)
       .then( calendars => { return importEvents(calendars) } )
       .then( events => { return saveEvents(db, events) } )
+      .catch ( err => {
+        console.log("ERROR 3!")
+        console.log(err)
+      })
   } catch(err) {
     console.log("ERROR 2!")
     console.log(err)
