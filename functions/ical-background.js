@@ -3,6 +3,7 @@ const MongoClient = require('mongodb').MongoClient
 const now = new Date()
 
 exports.handler = async event => {
+  console.log('ical import function triggered')
   const connectionStr = `mongodb+srv://${process.env.MONGODB_USERNAME}:${process.env.MONGODB_PASSWORD}@nola.uiwnl.mongodb.net?retryWrites=true&w=majority`
   const connectionOpts = {useNewUrlParser: true, useUnifiedTopology: true}
 
@@ -30,6 +31,7 @@ async function getCalendars(db) {
 }
 
 async function importEvents(calendars) {
+  console.log("Importing events...")
   return new Promise(async (resolve, reject)=> {
     let events = []
 
@@ -37,7 +39,6 @@ async function importEvents(calendars) {
       let data = await ical.async.fromURL(calendar.url)
       events.push(...processICS(data, calendar.name))
     }
-
     resolve(events)
   })
 }
