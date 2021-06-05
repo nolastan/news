@@ -46,7 +46,7 @@ async function getCalendars(db) {
         console.log(err, data)
         err ? reject(err) : resolve(data)
       })
-      console.log(JSON.stringify(calendars))
+    console.log(JSON.stringify(calendars))
     return calendars
  })
 }
@@ -69,8 +69,8 @@ async function importEvents(calendars) {
           }
         }
       }
+      resolve(events)
     }
-    resolve(events)
   })
 }
 
