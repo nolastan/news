@@ -46,7 +46,7 @@ async function importEvents(calendars) {
   
     for(const calendar of calendars) {
       console.log('loading calendar: ' + calendar.name)
-      data = await ical.async.fromURL(calendar.url)
+      let data = await ical.async.fromURL(calendar.url)
       for(const key in data) {
         console.log('importing events from ' + calendar.name)
         const event = data[key]
