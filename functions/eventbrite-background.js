@@ -1,4 +1,7 @@
 const ical = require('node-ical')
+let Parser = require('rss-parser')
+let parser = new Parser()
+
 const MongoClient = require('mongodb').MongoClient
 const now = new Date()
 
@@ -20,11 +23,12 @@ exports.handler = async event => {
   return result
 }
 
+// TODO DRY
 async function getCalendars(db) {
   return new Promise(async (resolve, reject) => {
     let calendars = await db
       .collection('calendars')
-      .find({format: 'ics'})
+      .find({format: 'eventbrite'})
       .toArray()
     resolve(calendars)
  })
@@ -36,7 +40,8 @@ async function importEvents(calendars) {
     let events = []
 
     for(const calendar of calendars) {
-      let data = await ical.async.fromURL(calendar.url)
+      console.log("Importing events from " + calendar.name)
+      let data = await parser.parseURL(calendar.url)
       events.push(...processICS(data, calendar.name))
     }
     resolve(events)
@@ -45,16 +50,45 @@ async function importEvents(calendars) {
 
 function processICS(data, venue) {
   let events = []
-  for(const key in data) {
-    const event = data[key]
-    let startDate = new Date(event.start)
-    if(event.type == 'VEVENT' && startDate > now && event.summary) {
-      event.venue = venue
-      event.timestamp = startDate.getTime()
-      events.push(event)
-      console.log(`Imported "${event.summary}" (${event.start}) from ${venue}.`)
+  data.items.forEach(rawEvent => {
+
+    let times = rawEvent.content.trim()
+      .replace(' at', '')
+      .replace(' from', '')
+      .replace('\r\n        ', '')
+      .split('<br /><br />')[0]
+      .split('<b>When:</b><br />')[1]
+      .split(' <span class="pipe">-</span> ')
+
+    if(!times[1]) {
+      times = times[0].split(' to ')
     }
-  }
+
+    let timestamp = Date.parse(times[0])
+    let startDate = new Date(timestamp)
+
+    if(startDate > now) {
+      let event = {
+        summary: rawEvent.title,
+        url: rawEvent.link,
+        created: rawEvent.pubDate,
+        uid: rawEvent.guid,
+        start: startDate,
+        // end: times[1] // TODO format into date
+        venue,
+        timestamp
+      }
+
+      event.description = rawEvent.content 
+        .split('<b>Event Details:</b><br />')[1]
+        .split('<br /><br />')[0]
+        .trim()
+
+      console.log(`Imported "${event.summary}" (${event.start}) from ${event.venue}.`)
+      events.push(event)
+    }
+  })
+
   return events
 }
 
