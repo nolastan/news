@@ -6,6 +6,7 @@
     "dotenv": "^8.2.0",
     "html-entities": "^2.3.2",
     "jsdom": "^16.5.3",
+    "mjpeg-decoder": "^1.0.3",
     "mongodb": "^3.6.9",
     "node-fetch": "^2.6.1",
     "node-ical": "^0.13.0",
