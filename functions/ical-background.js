@@ -46,16 +46,21 @@ async function importEvents(calendars) {
 function processICS(data, venue) {
   let events = []
   for(const key in data) {
-    const event = data[key]
-    let startDate = new Date(event.start)
-    if(event.type == 'VEVENT' && startDate > now && event.summary) {
-      event.venue = venue
-      event.timestamp = startDate.getTime()
-      events.push(event)
-      console.log(`Imported "${event.summary}" (${event.start}) from ${venue}.`)
-    }
+    const rawEvent = data[key]
+    rawEvent.venue = venue
+    const event = processEvent(rawEvent)
+    event && events.push(event)
   }
   return events
+}
+
+function processEvent(event) {
+  let startDate = new Date(event.start)
+  if(event.type == 'VEVENT' && startDate > now && event.summary) {
+    event.timestamp = startDate.getTime()
+    console.log(`Imported "${event.summary}" (${event.start}) from ${event.venue}.`)
+    return event
+  }
 }
 
 async function saveEvents(db, events) {
