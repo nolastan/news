@@ -47,16 +47,28 @@ function processICS(data, venue) {
   let events = []
   for(const key in data) {
     const rawEvent = data[key]
-    rawEvent.venue = venue
-    const event = processEvent(rawEvent)
+    let event = processEvent(rawEvent, venue)
+
     event && events.push(event)
+
+    if(rawEvent.recurrences) {
+      for(childKey in rawEvent.recurrences) {
+        let recurrence = processEvent(rawEvent.recurrences[childKey], venue)
+        if(recurrence) {
+          recurrence.parent = recurrence.uid
+          recurrence.uid = `${recurrence.uid}+${recurrence.timestamp}`
+          events.push(recurrence)       
+        }
+      }  
+    }
   }
   return events
 }
 
-function processEvent(event) {
+function processEvent(event, venue) {
   let startDate = new Date(event.start)
   if(event.type == 'VEVENT' && startDate > now && event.summary) {
+    event.venue = venue
     event.timestamp = startDate.getTime()
     console.log(`Imported "${event.summary}" (${event.start}) from ${event.venue}.`)
     return event
