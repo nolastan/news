@@ -6,7 +6,7 @@ const MongoClient = require('mongodb').MongoClient
 const now = new Date()
 
 exports.handler = async event => {
-  console.log('ical import function triggered')
+  console.log('eventbrite import function triggered')
   const connectionStr = `mongodb+srv://${process.env.MONGODB_USERNAME}:${process.env.MONGODB_PASSWORD}@nola.uiwnl.mongodb.net?retryWrites=true&w=majority`
   const connectionOpts = {useNewUrlParser: true, useUnifiedTopology: true}
 
@@ -14,7 +14,7 @@ exports.handler = async event => {
 
   await client.connect();
 
-  const db = client.db('nolatoday')
+  const db = client.db('cms')
 
   let result = await getCalendars(db)
     .then( async calendars => await importEvents(calendars) )
@@ -27,22 +27,22 @@ exports.handler = async event => {
 async function getCalendars(db) {
   return new Promise(async (resolve, reject) => {
     let calendars = await db
-      .collection('calendars')
-      .find({format: 'eventbrite'})
+      .collection('venues')
+      .find({Format: 'eventbrite'})
       .toArray()
     resolve(calendars)
  })
 }
 
-async function importEvents(calendars) {
+async function importEvents(venues) {
   console.log("Importing events...")
   return new Promise(async (resolve, reject)=> {
     let events = []
 
-    for(const calendar of calendars) {
-      console.log("Importing events from " + calendar.name)
-      let data = await parser.parseURL(calendar.url)
-      events.push(...processICS(data, calendar.name))
+    for(const venue of venues) {
+      console.log("Importing events from " + venue.Name)
+      let data = await parser.parseURL(venue.CalendarURL)
+      events.push(...processICS(data, venue._id))
     }
     resolve(events)
   })
@@ -97,8 +97,19 @@ async function saveEvents(db, events) {
   return new Promise((resolve, reject) => {
     for(const event of events) {
       db
-        .collection('events')
-        .updateOne({uid: event.uid}, {$set: event}, {upsert: true }, (err, res) => {
+        .collection('music_events')
+        .updateOne({uid: event.uid}, {$set: 
+          {
+            Start: event.start,
+            End: event.end,
+            uid: event.uid,
+            Description: event.description,
+            URL: event.url,
+            Title: event.summary,
+            venue: event.venue
+          }
+        },
+        {upsert: true }, (err, res) => {
           err ? reject(err) : resolve(res)
         })
     }

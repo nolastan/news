@@ -11,7 +11,7 @@ exports.handler = async event => {
 
   await client.connect();
 
-  const db = client.db('nolatoday')
+  const db = client.db('cms')
 
   let result = await getCalendars(db)
     .then( async calendars => await importEvents(calendars) )
@@ -23,21 +23,21 @@ exports.handler = async event => {
 async function getCalendars(db) {
   return new Promise(async (resolve, reject) => {
     let calendars = await db
-      .collection('calendars')
-      .find({format: 'ics'})
+      .collection('venues')
+      .find({Format: 'ics'})
       .toArray()
     resolve(calendars)
  })
 }
 
-async function importEvents(calendars) {
+async function importEvents(venues) {
   console.log("Importing events...")
   return new Promise(async (resolve, reject)=> {
     let events = []
 
-    for(const calendar of calendars) {
-      let data = await ical.async.fromURL(calendar.url)
-      events.push(...processICS(data, calendar.name))
+    for(const venue of venues) {
+      let data = await ical.async.fromURL(venue.CalendarURL)
+      events.push(...processICS(data, venue._id))
     }
     resolve(events)
   })
@@ -80,10 +80,24 @@ async function saveEvents(db, events) {
   return new Promise((resolve, reject) => {
     for(const event of events) {
       db
-        .collection('events')
-        .updateOne({uid: event.uid}, {$set: event}, {upsert: true }, (err, res) => {
-          err ? reject(err) : resolve(res)
-        })
+        .collection('music_events')
+        .updateOne(
+          {uid: event.uid}, 
+          {$set: 
+            {
+              Start: event.start,
+              End: event.end,
+              uid: event.uid,
+              Description: event.description,
+              URL: event.url,
+              Title: event.summary,
+              venue: event.venue
+            }
+          },
+          {upsert: true }, 
+          (err, res) => {
+            err ? reject(err) : resolve(res)
+          })
     }
   })
 }
