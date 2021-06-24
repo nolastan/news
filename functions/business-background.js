@@ -1,5 +1,6 @@
 const fetch = require('node-fetch')
-
+const { titleCase } = require('title-case')
+ 
 const MongoClient = require('mongodb').MongoClient
 const now = new Date()
 
@@ -24,12 +25,13 @@ exports.handler = async event => {
     .updateOne({ uid: business.businesslicensenumber }, 
       {$setOnInsert:
         {
-          name: business.businessname,
-          owner: business.ownername,
+          name: business.businessname && titleCase(business.businessname.toLowerCase()),
+          name: business.businessname && titleCase(business.businessname.toLowerCase()),
+          owner: business.ownername && titleCase(business.ownername.toLowerCase()),
           start: business.businessstartdate,
           streetNumber: business.streetnumber,
-          streetName: business.streetname,
-          streetSuffix: business.streetsuffix,
+          streetName: business.streetname && titleCase(business.streetname.toLowerCase()),
+          streetSuffix: business.streetsuffix && titleCase(business.streetsuffix.toLowerCase()),
           zip: business.zip,
           lat: business.latitude,
           lng: business.longitude,
