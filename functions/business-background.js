@@ -26,7 +26,6 @@ exports.handler = async event => {
       {$setOnInsert:
         {
           name: business.businessname && titleCase(business.businessname.toLowerCase()),
-          name: business.businessname && titleCase(business.businessname.toLowerCase()),
           owner: business.ownername && titleCase(business.ownername.toLowerCase()),
           start: business.businessstartdate,
           streetNumber: business.streetnumber,
