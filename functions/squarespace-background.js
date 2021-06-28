@@ -17,8 +17,7 @@ exports.handler = async event => {
   const db = client.db('cms')
 
   let result = await getCalendars(db)
-    .then( async calendars => await importEvents(calendars) )
-    .then( events => saveEvents(db, events) )
+    .then( async calendars => importEvents(calendars, db) )
 
   return result
 }
@@ -29,80 +28,57 @@ async function getCalendars(db) {
     let calendars = await db
       .collection('venues')
       .find({Format: 'squarespace'})
-      .limit(1)
       .toArray()
     resolve(calendars)
  })
 }
 
-async function importEvents(venues) {
+async function importEvents(venues, db) {
   console.log("Importing events...")
   return new Promise(async (resolve, reject)=> {
-    let events = []
-
     for(const venue of venues) {
       console.log("Importing events from " + venue.Name)
       let data = await parser.parseURL(venue.CalendarURL)
-      console.log(`Found ${data.items.length} events`)
-
-
-      // PROMISE ISSUES vvv
-
-      let newEvents = await processMicrodata(data, venue._id)
-        .then(events => events)
-      console.log(`Pushing ${newEvents.length} new events`)
-      events.push(...newEvents)
-      console.log(`Now have ${events.length} total events`)
-
-
-
+      processMicrodata(data, venue._id, db)
     }
-    resolve(events)
   })
 }
 
-async function processMicrodata(data, venue) {
-  return new Promise(async (resolve, reject) => {
-    let events = []
-    data.items.forEach(rawEvent => {
-      // console.log(`Processing ${rawEvent.title} ${rawEvent.link}`)
+async function processMicrodata(data, venue, db) {
+  data.items.forEach(rawEvent => {
 
-      microdata.parseUrl(rawEvent.link, function(err, json) {
-        if (!err && json) {
-          for(item of json) {
-            if(item.properties["@type"] === "Event") {
-            // if(item.properties.startDate > now) {
-                let newEvent = {
-                  Title: item.properties.name,
-                  Start: item.properties.startDate,
-                  End: item.properties.endDate,
-                  UID: item.id,
-                  venue
-                }
-                console.log(`Imported ${newEvent.Title}`)
-                events.push(newEvent)
-                console.log(`events has ${events.length} events`)
-            // }
+    microdata.parseUrl(rawEvent.link, function(err, json) {
+      if (!err && json) {
+        for(item of json) {
+          if(item.properties["@type"] === "Event") {
+            let startDate = new Date(item.properties.startDate)
+            if(startDate > now) {
+              let newEvent = {
+                Title: item.properties.name.split(' — ')[0].trim(),
+                Start: startDate,
+                End: new Date(item.properties.endDate),
+                uid: item.id,
+                venue,
+                URL: rawEvent.link
+              }
+              saveEvent(db, newEvent)
             }
           }
         }
-      });
-    })
-    resolve(events)
+      }
+    });
   })
 }
 
 // TODO DRY
-async function saveEvents(db, events) {
-  console.log(`Upserting ${events.length} events.`)
+async function saveEvent(db, event) {
+  console.log(`Upserting ${event.Title}`)
   return new Promise((resolve, reject) => {
-    for(const event of events) {
-      db
-        .collection('music_events')
-        .updateOne({uid: event.uid}, {$set: event},
-        {upsert: true}, (err, res) => {
-          err ? reject(err) : resolve(res)
-        })
-    }
+    db
+      .collection('music_events')
+      .updateOne({uid: event.uid}, {$set: event},
+      {upsert: true}, (err, res) => {
+        err ? reject(err) : resolve(res)
+      })
   })
 }
