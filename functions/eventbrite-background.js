@@ -1,4 +1,3 @@
-const ical = require('node-ical')
 let Parser = require('rss-parser')
 let parser = new Parser()
 
