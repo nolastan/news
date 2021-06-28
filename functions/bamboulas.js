@@ -35,8 +35,7 @@ exports.handler = async (event, context) => {
     </head>
     <body>
       ${content.innerHTML}
-      <form style="${formStyles}" name="music" method="POST" data-netlify="true">
-        <input type="hidden" name="form-name" value="music" />
+      <form style="${formStyles}" name="music" method="POST" action="https://getform.io/f/92eb4dbd-8b96-4f68-87f0-1cf73760ae04">
         <p>
           <label>Title: <input type="text" name="title" /></label>   
         </p>
