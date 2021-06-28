@@ -27,9 +27,13 @@ exports.handler = async (event, context) => {
       'Content-type': 'text/html'
     },
     body: `
+    <head>
+      <meta name="viewport" content="width=device-width, initial-scale=1">
       <style>
         input, button { width: 100%; }
       </style>
+    </head>
+    <body>
       ${content.innerHTML}
       <form style="${formStyles}" name="contact" method="POST" data-netlify="true">
         <p>
@@ -48,6 +52,7 @@ exports.handler = async (event, context) => {
           <button type="submit">Save</button>
         </p>
       </form>
+    </body>
     `,
   }
 }
