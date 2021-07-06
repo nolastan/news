@@ -37,10 +37,11 @@ exports.handler = async event => {
 
 async function getBulletinDom(endpoint) {
   try {
+    console.log(endpoint)
     let response = await fetch(endpoint)
     let page = await response.text()
     page = new JSDOM(page)
-    let article = page.window.document.querySelector("#main-body")
+    let article = page.window.document.getElementById("bulletin_body")
     return [article, response.url]
   } catch (err) {
     console.log(err.message)
