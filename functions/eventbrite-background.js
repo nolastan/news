@@ -83,7 +83,7 @@ function processICS(data, venue) {
         .split('<br /><br />')[0]
         .trim()
 
-      console.log(`Imported "${event.summary}" (${event.start}) from ${event.venue}.`)
+      console.log(`Imported "${event.summary}" (${event.start}) from ${venue}.`)
       events.push(event)
     }
   })
