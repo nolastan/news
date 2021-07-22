@@ -21,14 +21,14 @@ exports.handler = async event => {
       location = `${titleCase(crash.attributes.CommonName.toLowerCase())} at ${location}`
     }
     
-    items += `
+    items = `
     <item>
       <title>${title}</title>
       <link>https://nola.today</link>
       <description>${location}</description>
       <pubDate>${date}</pubDate>
       <guid isPermaLink="false">nola-today-crashes-${crash.attributes.Incident}</guid>
-    </item>`
+    </item>` + items
   }
   
   let rss = `<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
