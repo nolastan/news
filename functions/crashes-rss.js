@@ -11,7 +11,10 @@ exports.handler = async event => {
   let items = ``
 
   for(const crash of crashes) {
-    const title = titleCase(crash.attributes.TypeText.toLowerCase())
+    let title = titleCase(crash.attributes.TypeText.toLowerCase())
+    title = title.replace('Auto Accident with Injury', 'Vehicle Violence')
+    title = title.replace('Auto Accident', 'Vehicle Crash')
+
     const date = new Date(crash.attributes.TimeCreate).toUTCString()
     let location = titleCase(crash.attributes.Address.toLowerCase())
     if(crash.attributes.CommonName) {
